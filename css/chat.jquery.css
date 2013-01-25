@@ -1,0 +1,45 @@
+div.chat-container-login {
+    padding: 3px;
+    margin-left: auto;
+    margin-right: auto;
+} 
+div.chat-header-max {
+    margin-left : auto;
+    margin-right : auto;
+    height : 13px;
+    margin : 0px;
+    padding: 4px;
+}
+div.chat-container-max {
+	position : absolute;
+	bottom : 0px;
+	right : 10px;
+	width : 162px;
+	height : 110px;
+}
+div.chat-container-chat {
+	padding : 7px;
+}
+div.chat-header-min {
+	margin-left : auto;
+	margin-right : auto;
+	height : 13px;
+	margin : 0px;
+	padding : 4px;
+}
+div.chat-container-min {
+	position : absolute;
+	bottom : 0px;
+	right : 10px;
+	width : 162px;
+	height : 24px;
+}
+div.chat-container {
+    opacity: 1;
+}
+div.icon-bar {
+    float: right;
+}
+div.text-bar {
+    float: left;
+}
