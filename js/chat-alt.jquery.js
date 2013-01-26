@@ -4,7 +4,7 @@
  * @Date: 21.01.2013
  */
 (function ($) {
-    var Chat = {
+    var App = {
         ConnectionStatus: {
             OK: 0,
             INPROGRESS: 1,
@@ -22,59 +22,59 @@
         
         init : function(options) {
         
-            //Chat.options = $.extend(Chat.defaultOptions, options);
+            //App.options = $.extend(App.defaultOptions, options);
             
             // Strophe.log = function (level, msg) {
-              // Chat.log('['+level+']: '+msg);
+              // App.log('['+level+']: '+msg);
             // }
                                 
             var container = this;
             container.addClass('chat-container');
             
-            Chat.chatList = new ChatList(container);
-            container.append(Chat.chatList.Get$());
+            App.chatList = new ChatList(container);
+            container.append(App.chatList.Get$());
             
-            //Chat.onConected = Chat.chatList.OnConnected;
-            //Chat.onRoomsFetched = Chat.chatList.OnRoomsFetched;
-            //Chat.onUsersFetched = Chat.chatList.OnUsersFetched;
-            //Chat.onConnectionStateChanged = Chat.chatList.OnConnectionStateChanged;
+            //App.onConected = App.chatList.OnConnected;
+            //App.onRoomsFetched = App.chatList.OnRoomsFetched;
+            //App.onUsersFetched = App.chatList.OnUsersFetched;
+            //App.onConnectionStateChanged = App.chatList.OnConnectionStateChanged;
             
-            Chat.chatList.Minimize();
+            App.chatList.Minimize();
             
-            //Chat.FetchUserCredentialsAndLogin();
+            //App.FetchUserCredentialsAndLogin();
         },
         log : function (msg) {
             $('#log').append('<div></div>').append(document.createTextNode(msg));
         },
         rawInput : function (data) {
-            Chat.log('RECV: ' + data);
+            App.log('RECV: ' + data);
         },
         rawOutput : function (data) {
-            Chat.log('SENT: ' + data);
+            App.log('SENT: ' + data);
         },
         FetchUserCredentialsAndLogin : function () {
             
             $.ajax({
                 dataType : "json",
                 url : 'data.php',
-                data : {'username': Chat.options.username},
+                data : {'username': App.options.username},
                 success : function (userCredentials) {
-                    Chat.Login(userCredentials);
+                    App.Login(userCredentials);
                 }
             });
         },
         Login : function (userCredentials) {
             
             // adding rooms to gui list
-            $.ajax({
-                dataType : "json",
-                url : 'data.php',
-                data : {'all':'rooms'},
-                success : function(rooms) {
-                    //if(Chat.onRoomsFetched != null)
-                        Chat.chatList.OnRoomsFetched(rooms);
-                }
-            });
+            // $.ajax({
+                // dataType : "json",
+                // url : 'data.php',
+                // data : {'all':'rooms'},
+                // success : function(rooms) {
+                    // //if(App.onRoomsFetched != null)
+                        // App.chatList.OnRoomsFetched(rooms);
+                // }
+            // });
             
             // adding users to gui list
             $.ajax({
@@ -82,20 +82,20 @@
                 url : 'data.php',
                 data : {'all':'users'},
                 success : function(users) {
-                    //if(Chat.onUsersFetched != null)
-                        Chat.chatList.OnUsersFetched(users);
+                    //if(App.onUsersFetched != null)
+                        App.chatList.OnUsersFetched(users);
                 }
             });
             
-            Chat.chatList.SetUserCredentials(userCredentials);
+            App.chatList.SetUserCredentials(userCredentials);
             
-            Chat.xmppConnection = new Strophe.Connection(Chat.options.bosh_service);
-            //Chat.xmppConnection.rawInput = Chat.rawInput;
-            //Chat.xmppConnection.rawOutput = Chat.rawOutput;
-            Chat.xmppConnection.connect(
+            App.xmppConnection = new Strophe.Connection(App.options.bosh_service);
+            //App.xmppConnection.rawInput = App.rawInput;
+            //App.xmppConnection.rawOutput = App.rawOutput;
+            App.xmppConnection.connect(
                 userCredentials.jid,
                 userCredentials.password,
-                Chat.OnConnect
+                App.OnConnect
             );
         },
         OnConnect : function (status) {
@@ -103,83 +103,30 @@
             switch(status) {
                 case Strophe.Status.CONNECTING:
                 case Strophe.Status.AUTHENTICATING:
-                    //if(Chat.onConnectionStateChanged != null)
-                    Chat.chatList.OnConnectionStateChanged(Chat.ConnectionStatus.INPROGRESS);
+                    App.chatList.OnConnectionStateChanged(App.ConnectionStatus.INPROGRESS);
                     break;
                     
                 case Strophe.Status.CONNFAIL:
                 case Strophe.Status.DISCONNECTING:
                 case Strophe.Status.DISCONNECTED:
                 case Strophe.Status.AUTHFAIL:
-                    //if(Chat.onConnectionStateChanged != null)
-                    Chat.chatList.OnConnectionStateChanged(Chat.ConnectionStatus.FAIL);
+                    App.chatList.OnConnectionStateChanged(App.ConnectionStatus.FAIL);
                     break;
                     
                 case Strophe.Status.CONNECTED:
-                    //if(Chat.onConnectionStateChanged != null)
-                    Chat.chatList.OnConnectionStateChanged(Chat.ConnectionStatus.OK);
-                    Chat.xmppConnection.addHandler(Chat.OnMessage, null, 'message', null, null,  null); 
-                    Chat.xmppConnection.send($pres().tree());
+                    App.chatList.OnConnectionStateChanged(App.ConnectionStatus.OK);
+                    App.xmppConnection.addHandler(App.OnMessage, null, 'message', null, null,  null); 
+                    App.xmppConnection.send($pres().tree());
                     break;
                     
                 case Strophe.Status.ATTACHED:
-                    //if(Chat.chatList.OnConnectionStateChanged != null)
-                    Chat.chatList.OnConnectionStateChanged(Chat.ConnectionStatus.OK); //????? moze osobny order code
+                    App.chatList.OnConnectionStateChanged(App.ConnectionStatus.OK); //????? moze osobny order code
                     break;
                     
                 default:
-                    //if(Chat.chatList.OnConnectionStateChanged != null)
-                    Chat.chatList.OnConnectionStateChanged(Chat.ConnectionStatus.FAIL);
+                    App.chatList.OnConnectionStateChanged(App.ConnectionStatus.FAIL);
                     break;
             }
-            // if (status == Strophe.Status.CONNECTING) {
-                // Chat.log('Strophe is connecting.');
-                // self_123.chatListHeaderText.html('Logowanie...');
-                // self_123.userLoginIcon.addClass('chat-list-user-notactive');
-                // self_123.userLoginIcon.removeClass('chat-list-user-active');
-            // } else if (status == Strophe.Status.CONNFAIL) {
-                // Chat.log('Strophe failed to connect.');
-                // self_123.chatListHeaderText.html('Niezalogowany');
-                // self_123.userLoginIcon.addClass('chat-list-user-notactive');
-                // self_123.userLoginIcon.removeClass('chat-list-user-active');            
-            // } else if (status == Strophe.Status.DISCONNECTING) {
-                // Chat.log('Strophe is disconnecting.');
-                // self_123.chatListHeaderText.html('Niezalogowany');
-                // self_123.userLoginIcon.addClass('chat-list-user-notactive');
-                // self_123.userLoginIcon.removeClass('chat-list-user-active'); 
-            // } else if (status == Strophe.Status.DISCONNECTED) {
-                // Chat.log('Strophe is disconnected.');
-                // self_123.chatListHeaderText.html('Niezalogowany');
-                // self_123.userLoginIcon.addClass('chat-list-user-notactive');
-                // self_123.userLoginIcon.removeClass('chat-list-user-active'); 
-            // } else if (status == Strophe.Status.AUTHENTICATING) {
-                // Chat.log('Strophe is AUTHENTICATING.');
-                // self_123.chatListHeaderText.html('Logowanie...');
-                // self_123.userLoginIcon.addClass('chat-list-user-notactive');
-                // self_123.userLoginIcon.removeClass('chat-list-user-active');
-            // } else if (status == Strophe.Status.AUTHFAIL) {
-                // Chat.log('User not autenticated.');
-                // self_123.chatListHeaderText.html('Niezalogowany');
-                // self_123.userLoginIcon.addClass('chat-list-user-notactive');
-                // self_123.userLoginIcon.removeClass('chat-list-user-active');
-            // } else if (status == Strophe.Status.CONNECTED) {
-                
-                // self_123.chatList.chatListHeaderText.text('Zalogowany <strong>'+self.jid+'</strong>');
-                // self_123.chatList.userLoginIcon.removeClass('chat-list-user-notactive');
-                // self_123.chatList.userLoginIcon.addClass('chat-list-user-active')
-
-                // Chat.log('Strophe is connected.');
-                
-                // //Strophe.log = function (level, msg) {
-                // //  Chat.log('['+level+']: '+msg);
-                // //};
-                
-                // Chat.chatList.xmppConnection.addHandler(self.OnMessage, null, 'message', null, null,  null); 
-                // Chat.xmppConnection.send($pres().tree());
-                
-            // } else if (status == Strophe.Status.ATTACHED) {
-                // Chat.log('Attached');
-            // }
         },
         OnMessage : function (msg) {
 
@@ -187,22 +134,24 @@
             var from = msg.getAttribute('from');
             var type = msg.getAttribute('type');
             var elems = msg.getElementsByTagName('body');
-
+            
+            App.log(type + ':::' + Strophe.getBareJidFromJid(from));
+            
             if (type == "chat" && elems.length > 0) {
                 var body = elems[0];
 
-                Chat.log('ECHOBOT: I got a message from ' + Strophe.getBareJidFromJid(from) + ': ' + Strophe.getText(body));
+                App.log('ECHOBOT: I got a message from ' + Strophe.getBareJidFromJid(from) + ': ' + Strophe.getText(body));
                 
-                Chat.chatList.OnMessage(
+                App.chatList.OnMessage(
                                 Strophe.getBareJidFromJid(from), 
                                 Strophe.getText(body)
                               );
                 
                 //var reply = $msg({to: from, from: to, type: 'chat'})
                 //        .cnode(Strophe.copyElement(body));
-                //Chat.connection.send(reply.tree());
+                //App.connection.send(reply.tree());
 
-                //Chat.log('ECHOBOT: I sent ' + from + ': ' + Strophe.getText(body));
+                //App.log('ECHOBOT: I sent ' + from + ': ' + Strophe.getText(body));
             }
 
             // we must return true to keep the handler alive.  
@@ -211,25 +160,25 @@
         },
         SendMessage : function (jid, msg) {
             
-            if (Chat.xmppConnection.connected && Chat.xmppConnection.authenticated) {
+            if (App.xmppConnection.connected && App.xmppConnection.authenticated) {
                 //var text = $('#' + elemid).get(0).value;
                 if (msg.length > 0) {
-                    //var from = Strophe.getNodeFromJid(Chat.connection.jid);
+                    //var from = Strophe.getNodeFromJid(App.connection.jid);
                     //var to = 'user2@big';
                     //alert(self.jid);
                     var reply = $msg({
                             to : jid, //Strophe.getDomainFromJid(jid),
-                            from : Chat.xmppConnection.jid,
+                            from : App.xmppConnection.jid,
                             type : "chat"
                         }).c("body").t(msg);
                     
-                    Chat.xmppConnection.send(reply.tree());
-                    Chat.log(msg, "from");
+                    App.xmppConnection.send(reply.tree());
+                    App.log(msg, "from");
                     
                     //$('#' + elemid).get(0).value = "";
                 }
             } else {
-                Chat.log("You have to log in before you can send msg");
+                App.log("You have to log in before you can send msg");
             }
         }        
     };
@@ -243,15 +192,65 @@
          */
         self.xmppConnection = null;
         self.users = [];
+        self.userCredentials = null;
+        self.username = null;
+        self.isMinimized = false;
+        self.selectedUsers = [];
         
         /*
          * class fields GUI
          */
         self.chatContainer = container;
         self.chatBoxes = [];
-        self.userCredentials = null;
-        self.username = null;
-        self.isMinimized = false;
+        
+        self.contextMenu = 
+            $('<ul>').hide()
+                .append($('<li>')
+                    .append($('<a>')
+                        .attr({'href':'#'})
+                        .text('Prywatny')
+                        .append($('<span>').addClass('ui-icon ui-icon-person'))
+                    )
+                    .click(function () {
+                        self.contextMenu.hide();
+                        self.ShowChatBox(
+                                self.contextMenu.data('selectedUser').jid, 
+                                self.contextMenu.data('selectedUser').username
+                            );
+                    })
+                    .bind('contextmenu', function () {
+                        self.contextMenu.hide();
+                        return false;
+                    })
+                )
+                .append($('<li>')
+                    .append($('<a>')
+                        .attr({'href':'#'})
+                        .text('Grupa')
+                        .append($('<span>').addClass('ui-icon ui-icon-comment'))
+                    )
+                    .click(function () {
+                        self.contextMenu.hide();
+                        
+                        // if(self.selectedUsers.length > 0) {
+                            // App.xmppConnection.
+                        // }
+                    })
+                    .bind('contextmenu', function () {
+                        self.contextMenu.hide();
+                        return false;
+                    })
+                )
+                .css({
+                    left : '0px',
+                    top : '0px',
+                    position : 'absolute',
+                    width: '100px'
+                })
+                .appendTo(document.body)
+                .menu();
+        
+        
         self.chatList = $('<div>').addClass('chat-list');
         self.chatListHeader = $('<div>')
                                 .addClass('chat-list-header')
@@ -302,14 +301,12 @@
         
         self.chatListHeader.append(headerIcons)
         
-        self.chatListRoomList = $('<ol>')
-                                    .selectable();
-        self.chatListMain.append(self.chatListRoomList);
+        // self.chatListRoomList = $('<ol>').selectable();
+        // self.chatListMain.append(self.chatListRoomList);
         
-        self.chatListMain.append($('<hr>').css({'width':'90%'}));
+        // self.chatListMain.append($('<hr>').css({'width':'90%'}));
         
-        self.chatListUserList = $('<ol>')
-                                    .selectable();
+        self.chatListUserList = $('<ol>').addClass('chat-list-userlist');//.selectable();
         self.chatListMain.append(self.chatListUserList);
     }
     
@@ -393,28 +390,28 @@
         this.userCredentials = userCredentials;
     }
     
-    ChatList.prototype.OnRoomsFetched = function (rooms) {
+    // ChatList.prototype.OnRoomsFetched = function (rooms) {
 
-        var self = this;
+        // var self = this;
         
-        self.rooms = $(rooms).sort(function(a,b) {
-                                        return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;  
-                                    });
+        // self.rooms = $(rooms).sort(function(a,b) {
+                                        // return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;  
+                                    // });
         
-        //self.chatListRoomList.clear();
+        // //self.chatListRoomList.clear();
         
-        self.rooms.each(function() {
-            var room = this;
-            self.chatListRoomList.append(
-                $('<button>')
-                    .addClass('chat-list-userlist-element ui-corner-all')
-                    .append($('<div>').addClass('chat-list-userlist-text').text(room.name))
-                    .click(function () {
-                        self.ShowChatBox(room.name, '');
-                    }) 
-            );
-        });
-    }
+        // self.rooms.each(function() {
+            // var room = this;
+            // self.chatListRoomList.append(
+                // $('<button>')
+                    // .addClass('chat-list-userlist-element ui-corner-all')
+                    // .append($('<div>').addClass('chat-list-userlist-text').text(room.name))
+                    // .click(function () {
+                        // self.ShowChatBox(room.name, '');
+                    // }) 
+            // );
+        // });
+    // }
     
     ChatList.prototype.OnUsersFetched = function(users) {
     
@@ -426,18 +423,38 @@
                     
         //self.chatListUsersList.clear();
         
-        self.users.each(function() {
+        self.users.each(function () {
             var user = this;
-            self.chatListUserList.append(
-                $('<button>')
-                    .addClass('chat-list-userlist-element ui-corner-all')
-                    .append($('<div>').addClass('chat-list-user-notactive'))
-                    .append($('<div>').addClass('chat-list-userlist-text').text(user.username + ' [' + user.jid + ']'))
-                    .click(function () {
-                        self.ShowChatBox(user.jid, user.username);
-                    })
-                    
-            );
+            if(user.jid != self.userCredentials.jid) {
+                self.chatListUserList.append(
+                    $('<li>')
+                        .data('userCredentials', {'username':user.username, 'jid':user.jid})
+                        .css({'height':'24px'})
+                        .addClass('chat-list-userlist-element ui-corner-all')
+                        .append($('<div>').addClass('chat-list-user-notactive'))
+                        .append($('<div>').addClass('chat-list-userlist-text').text(user.username + ' [' + user.jid + ']'))
+                        .bind('click', function() {
+                            $(this).addClass('chat-list-userlist-element-selected');
+                            self.selectedUsers.push($(this).data('userCredentials'));
+                        })
+                        .bind('dblclick', function () {
+                            self.ShowChatBox(user.jid, user.username);
+                        })
+                        .bind('contextmenu', function (e) {
+                            self.contextMenu
+                                .css({
+                                    left : e.pageX,
+                                    top : e.pageY,
+                                    zIndex : '101'
+                                })
+                                .show();
+                            
+                            self.contextMenu.data('selectedUser', $(this).data('userCredentials'));
+                            
+                            return false;
+                        })
+                );
+            }
         });
     }
     
@@ -472,19 +489,19 @@
         
         switch(connectionStatus) {
     
-            case Chat.ConnectionStatus.INPROGRESS:
+            case App.ConnectionStatus.INPROGRESS:
                 self.chatListHeaderText.html('Logowanie...');
                 self.userLoginIcon.addClass('chat-list-user-notactive');
                 self.userLoginIcon.removeClass('chat-list-user-active');
                 break;
                 
-            case Chat.ConnectionStatus.FAIL:
+            case App.ConnectionStatus.FAIL:
                 self.chatListHeaderText.html('Niezalogowany');
                 self.userLoginIcon.addClass('chat-list-user-notactive');
                 self.userLoginIcon.removeClass('chat-list-user-active');
                 break;
                 
-            case Chat.ConnectionStatus.OK:
+            case App.ConnectionStatus.OK:
                 self.chatListHeaderText.html('Zalogowany <strong>'+self.userCredentials.jid+'</strong>');
                 self.userLoginIcon.removeClass('chat-list-user-notactive');
                 self.userLoginIcon.addClass('chat-list-user-active')
@@ -526,7 +543,7 @@
         self.chatBoxHeader.append(
                             $('<div>')
                                 .addClass('chat-box-header-text')
-                                .html('Czat z <strong>'+self.jid+'</strong>')
+                                .html('<strong>'+self.jid+'</strong>')
                             );
 
         self.chatBoxTextArea = $('<div>')
@@ -658,7 +675,7 @@
     	
         var self = this;
     	
-        Chat.SendMessage(self.jid, value);
+        App.SendMessage(self.jid, value);
     	
     	var header = '';
     	if (self.lastWriter != self.chatController.userCredentials.jid) {
@@ -730,13 +747,13 @@
     
     $.fn.chat = function (method, options) {
         
-        Chat.options = $.extend(Chat.options, options);
+        App.options = $.extend(App.options, options);
         
         /***** Method resolving *****/
-        if (Chat[method]) {
-            return Chat[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        if (App[method]) {
+            return App[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
-            return Chat.init.apply(this, arguments);
+            return App.init.apply(this, arguments);
         } else {
             $.error('Method ' + method + ' does not exist in jQuery.chat');
         }

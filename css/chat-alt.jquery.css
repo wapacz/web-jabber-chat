@@ -90,7 +90,7 @@ div.chat-list-user-active {
     float: left;   
 }
 
-button.chat-list-userlist-element {
+li.chat-list-userlist-element {
     height: 24px;
     width: 100%;
     padding: 0px;
@@ -98,11 +98,33 @@ button.chat-list-userlist-element {
     border: none;
     text-align: left;
     background: inherit;
+    margin-top: 2px;
+    padding-left: 3px;
 }
 
-button.chat-list-userlist-element:hover {
+li.chat-list-userlist-element:hover {
     
 }
+
+ol.chat-list-userlist .ui-selecting {
+    background: #FECA40; 
+}
+ol.chat-list-userlist .ui-selected { 
+    background: #F39814; 
+    color: white; 
+}
+
+li.chat-list-userlist-element-selected { 
+    background: #F39814; 
+    color: white; 
+}
+
+ol.chat-list-userlist { 
+    list-style-type: none; 
+}
+
+
+
 
 div.chat-list-userlist-text {
     padding: 4px;
@@ -242,10 +264,9 @@ div.chat-box-footer {
     background: #99C2EB;
 }
 
-button.chat-list-userlist-element:hover {
+li.chat-list-userlist-element:hover {
     background: #99C2EB;
 }
-
 
 
 
