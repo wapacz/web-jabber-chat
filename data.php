@@ -6,10 +6,10 @@ $rooms = array(
     array('name'=>'Drużyna4')
 );
 $users = array(
-    array('jid'=>'user1@fobos', 'password'=>'user1', 'username'=>'user1'),
-    array('jid'=>'user3@fobos', 'password'=>'user3', 'username'=>'user3'),
-    array('jid'=>'user4@fobos', 'password'=>'user4', 'username'=>'user4'),
-    array('jid'=>'user2@fobos', 'password'=>'user2', 'username'=>'user2')
+    array('jid'=>'user1@ks357566.kimsufi.com', 'password'=>'user1', 'username'=>'user1'),
+    array('jid'=>'user3@ks357566.kimsufi.com', 'password'=>'user3', 'username'=>'user3'),
+    array('jid'=>'user4@ks357566.kimsufi.com', 'password'=>'user4', 'username'=>'user4'),
+    array('jid'=>'user2@ks357566.kimsufi.com', 'password'=>'user2', 'username'=>'user2')
 );
 
 if(isset($_GET['username'])) {
@@ -33,6 +33,27 @@ else if(isset($_GET['all'])) {
         default:
             echo json_encode(null);
     }
+}
+else if(isset($_GET['contacts'])) {
+
+    $username="root";
+    $password="its2012";
+    $database="ext_db";
+
+    $mysqli = new mysqli("localhost", $username, $password, $database);
+    if ($result = $mysqli->query("SELECT contact AS username FROM contacts WHERE username='".$_GET['contacts']."'")) {
+
+        $result_array = array();
+        while ($row = $result->fetch_assoc()) {
+            array_push($result_array, $row);
+        }
+        
+        echo json_encode($result_array);
+        
+        $result->free();
+    }
+
+    $mysqli->close();
 }
 else {
     echo json_encode(null);

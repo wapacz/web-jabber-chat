@@ -6,24 +6,55 @@
     <link href="css/clear.css" rel="stylesheet">
 	<link href="css/smoothness/jquery-ui-1.10.0.custom.css" rel="stylesheet">
 	<link href="css/chat-alt.jquery.css" rel="stylesheet">
+    <style>
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    div#log {padding: 10px; margin: 10px; width: 1200px; height: 500px; overflow: auto; font-family: 'Courier New';}
+    </style>    
 	<script src="js/jquery-1.9.0.js"></script>
 	<script src="js/jquery-ui-1.10.0.custom.js"></script>
 	<script src='js/strophe.js'></script>
     <script src='js/chat-alt.jquery.js'></script>
 	<script>
 	$(document).ready(function() {
-		$("#chat").chat('init');//, {'username': 'user2'});
-        $("#chat").chat('FetchUserCredentialsAndLogin', {'username': 'user2'});
-	});
+        var name = $("#name");
+        var password = $("#password");
+        $("#chat").chat('init', {
+            domain: 'ks357566.kimsufi.com'
+        });        
+        $("#dialog").dialog({
+            height : 200,
+            width : 350,
+            modal : true,
+            buttons : {
+                "Login" : function () {
+                    $("#chat").chat('login', {
+                        login: name.val(),
+                        password: password.val()
+                    });
+                    $(this).dialog("close");
+                }               
+            }
+        });
+        $(window).bind('beforeunload', function(){
+            $("#chat").chat('logout');
+            return null;
+        });        
+    });
 	</script>
   </head>
   <body>
-  
-  
-  
-  
+    <div id="dialog" title="Podaj login i hasło">
+        <form>
+            <fieldset>
+            <label for="name">Login</label>
+            <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+            <label for="password">Hasło</label>
+            <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all" />
+            </fieldset>
+        </form>
+    </div>
 	<div id='chat'></div>
-    <hr>
-    <div id='log'></div>
+    <div id='log' class="ui-widget-content ui-corner-all"></div>
   </body>
 </html>

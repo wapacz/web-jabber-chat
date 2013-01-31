@@ -106,19 +106,6 @@ li.chat-list-userlist-element:hover {
     
 }
 
-ol.chat-list-userlist .ui-selecting {
-    background: #FECA40; 
-}
-ol.chat-list-userlist .ui-selected { 
-    background: #F39814; 
-    color: white; 
-}
-
-li.chat-list-userlist-element-selected { 
-    background: #F39814; 
-    color: white; 
-}
-
 ol.chat-list-userlist { 
     list-style-type: none; 
 }
@@ -232,6 +219,30 @@ div.chat-box-textarea {
     background: inherit;
 }
 
+div.chat-box-textarea-warning {
+    height: 246px;
+    width: 244px;
+    overflow-y: scroll;
+    overflow-x: auto;
+    white-space: normal;
+    border: none;
+    background: inherit;
+}
+
+div.chat-box-warning {
+    height: 48px;
+    width: 244px;
+    border: none;
+    background: #FF6666;
+    color: #FFCCCC;
+}
+
+div.chat-box-warning-text { 
+    padding-top: 4px;
+    padding-left: 5px;
+    font-size: 12px;
+}
+
 div.chat-box-minimized {
     height: 25px;
     margin-top: 525px;
@@ -268,7 +279,18 @@ li.chat-list-userlist-element:hover {
     background: #99C2EB;
 }
 
+ol.chat-list-userlist .ui-selecting {
+    background: #99C2EB; 
+}
+ol.chat-list-userlist .ui-selected { 
+    background: #99C2EB; 
+    color: white; 
+}
 
+li.chat-list-userlist-element-selected { 
+    background: #99C2EB; 
+    color: white; 
+}
 
 
 
