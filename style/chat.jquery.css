@@ -78,7 +78,7 @@ div.chat-list-user-notactive {
     height: 16px;
     width: 16px;
     margin: 4px;
-    background-image: url('../img/user-clear-16x16.gif');
+    background-image: url('images/user-clear-16x16.gif');
     float: left;   
 }
 
@@ -86,7 +86,7 @@ div.chat-list-user-active {
     height: 16px;
     width: 16px;
     margin: 4px;
-    background-image: url('../img/user-green-16x16.gif');
+    background-image: url('images/user-green-16x16.gif');
     float: left;   
 }
 
@@ -110,11 +110,19 @@ ol.chat-list-userlist {
     list-style-type: none; 
 }
 
-
-
-
 div.chat-list-userlist-text {
+    margin-top: 2px;
     padding: 4px;
+    width: 165px;
+    float: left;
+}
+
+div.chat-list-userlist-private-chat-icon {
+    float: right;
+    height: 17px; 
+    width: 17px;
+    margin-right: 3px;
+    cursor: pointer;
 }
 
 div.chat-list-minimized {

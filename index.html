@@ -3,24 +3,31 @@
   <head>
     <meta charset="utf-8">
 	<title>Chat</title>
-    <link href="css/clear.css" rel="stylesheet">
-	<link href="css/smoothness/jquery-ui-1.10.0.custom.css" rel="stylesheet">
-	<link href="css/chat-alt.jquery.css" rel="stylesheet">
+    <link href="style/clear.css" rel="stylesheet">
+	<link href="style/smoothness/jquery-ui-1.10.0.custom.css" rel="stylesheet">
+	<link href="style/chat.jquery.css" rel="stylesheet">
     <style>
     label, input { display:block; }
     input.text { margin-bottom:12px; width:95%; padding: .4em; }
     div#log {padding: 10px; margin: 10px; width: 1200px; height: 500px; overflow: auto; font-family: 'Courier New';}
     </style>    
 	<script src="js/jquery-1.9.0.js"></script>
-	<script src="js/jquery-ui-1.10.0.custom.js"></script>
-	<script src='js/strophe.js'></script>
-    <script src='js/chat-alt.jquery.js'></script>
+	<script src="js/jquery-ui-1.10.0.custom.min.js"></script>
+	<script src='js/strophe.min.js'></script>
+    <script src='js/strophe.muc.min.js'></script>
+	<script src='js/chat.jquery.min.js'></script>
 	<script>
 	$(document).ready(function() {
         var name = $("#name");
         var password = $("#password");
         $("#chat").chat('init', {
-            domain: 'ks357566.kimsufi.com'
+            domain: 'ks357566.kimsufi.com',
+            onSuccess: function(msg) {
+                //alert(msg);
+            },
+            onError: function(msg) {
+                alert(msg);
+            }
         });        
         $("#dialog").dialog({
             height : 200,
@@ -36,10 +43,12 @@
                 }               
             }
         });
-        $(window).bind('beforeunload', function(){
+        $(window).bind('beforeunload', function(e){
             $("#chat").chat('logout');
-            return null;
-        });        
+        });  
+        $('#clear_log').button().click(function(){
+            $('#log').text('');
+        });
     });
 	</script>
   </head>
@@ -55,6 +64,7 @@
         </form>
     </div>
 	<div id='chat'></div>
-    <div id='log' class="ui-widget-content ui-corner-all"></div>
+    <!--div id='log' class="ui-widget-content ui-corner-all"></div>
+    <button id='clear_log' title='Clear log' /-->
   </body>
 </html>
